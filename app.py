@@ -175,3 +175,194 @@ def login():
         )
 
     return render_template("login.html")
+
+
+
+@app.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    return redirect(url_for("login"))
+
+
+@app.route("/games")
+@login_required
+def games():
+
+    pesquisa = request.args.get("pesquisa", "")
+
+    if pesquisa:
+        lista_games = Game.query.filter(
+            Game.nome.contains(pesquisa)
+        ).all()
+    else:
+        lista_games = Game.query.all()
+
+    return render_template(
+        "games.html",
+        games=lista_games,
+        pesquisa=pesquisa
+    )
+
+
+
+@app.route("/games/novo", methods=["GET", "POST"])
+@login_required
+def novo_game():
+
+    if request.method == "POST":
+
+        nome = request.form["nome"]
+        plataforma = request.form["plataforma"]
+        preco = float(request.form["preco"])
+        estoque = int(request.form["estoque"])
+
+        game = Game(
+            nome=nome,
+            plataforma=plataforma,
+            preco=preco,
+            estoque=estoque
+        )
+
+        db.session.add(game)
+        db.session.commit()
+
+        return redirect(url_for("games"))
+
+    return render_template("novo_game.html")
+
+
+@app.route("/games/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_game(id):
+
+    game = Game.query.get_or_404(id)
+
+    if request.method == "POST":
+
+        game.nome = request.form["nome"]
+        game.plataforma = request.form["plataforma"]
+        game.preco = float(request.form["preco"])
+        game.estoque = int(request.form["estoque"])
+
+        db.session.commit()
+
+        return redirect(url_for("games"))
+
+    return render_template(
+        "editar_game.html",
+        game=game
+    )
+
+
+@app.route("/games/excluir/<int:id>")
+@login_required
+def excluir_game(id):
+
+    game = Game.query.get_or_404(id)
+
+    db.session.delete(game)
+    db.session.commit()
+
+    return redirect(url_for("games"))
+
+
+@app.route("/vendas")
+@login_required
+def vendas():
+
+    lista_vendas = Venda.query.all()
+
+    return render_template(
+        "vendas.html",
+        vendas=lista_vendas
+    )
+
+
+@app.route("/vendas/nova", methods=["GET", "POST"])
+@login_required
+def nova_venda():
+
+    games = Game.query.all()
+
+    if request.method == "POST":
+
+        game_id = int(request.form["game"])
+        quantidade = int(request.form["quantidade"])
+        data = request.form["data"]
+
+        game = Game.query.get(game_id)
+
+        if game.estoque < quantidade:
+
+            return render_template(
+                "nova_venda.html",
+                games=games,
+                erro="Estoque insuficiente."
+            )
+
+        venda = Venda(
+            game_id=game_id,
+            quantidade=quantidade,
+            data=data
+        )
+
+        game.estoque -= quantidade
+
+        db.session.add(venda)
+        db.session.commit()
+
+        return redirect(url_for("vendas"))
+
+    return render_template(
+        "nova_venda.html",
+        games=games
+    )
+
+
+
+@app.route("/vendas/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_venda(id):
+
+    venda = Venda.query.get_or_404(id)
+    games = Game.query.all()
+
+    if request.method == "POST":
+
+        venda.game_id = int(request.form["game"])
+        venda.quantidade = int(request.form["quantidade"])
+        venda.data = request.form["data"]
+
+        db.session.commit()
+
+        return redirect(url_for("vendas"))
+
+    return render_template(
+        "editar_venda.html",
+        venda=venda,
+        games=games
+    )
+
+
+
+@app.route("/vendas/excluir/<int:id>")
+@login_required
+def excluir_venda(id):
+
+    venda = Venda.query.get_or_404(id)
+
+    game = Game.query.get(venda.game_id)
+
+    game.estoque += venda.quantidade
+
+    db.session.delete(venda)
+    db.session.commit()
+
+    return redirect(url_for("vendas"))
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
