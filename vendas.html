@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block conteudo %}
+
+<h2>Lista de Vendas</h2>
+
+<a href="{{ url_for('nova_venda') }}">Registrar nova venda</a>
+
+<br><br>
+
+<table>
+    <tr>
+        <th>Game</th>
+        <th>Quantidade</th>
+        <th>Data</th>
+        <th>Ações</th>
+    </tr>
+    {% for venda in vendas %}
+    <tr>
+        <td>{{ venda.game.nome }}</td>
+        <td>{{ venda.quantidade }}</td>
+        <td>{{ venda.data }}</td>
+        <td>
+            <a href="{{ url_for('editar_venda', id=venda.id) }}">Editar</a> |
+            <a href="{{ url_for('excluir_venda', id=venda.id) }}">Excluir</a>
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

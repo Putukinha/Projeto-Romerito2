@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block conteudo %}
+
+<h2>Entrar no Sistema</h2>
+
+{% if erro %}
+    <p class="erro">{{ erro }}</p>
+{% endif %}
+
+<form method="POST">
+
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="senha">Senha</label>
+    <input type="password" id="senha" name="senha" required>
+
+    <button type="submit">Entrar</button>
+
+</form>
+
+{% endblock %}

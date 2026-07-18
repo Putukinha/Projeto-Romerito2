@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block conteudo %}
+
+<h2>Lista de Games</h2>
+
+<form method="GET">
+    <input type="text" name="pesquisa"
+        placeholder="Pesquisar..."
+        value="{{ pesquisa }}">
+
+    <button type="submit">Buscar</button>
+</form>
+<br>
+<a href="{{ url_for('novo_game') }}">Cadastrar novo game</a>
+<br><br>
+<table>
+
+    <tr>
+        <th>Nome</th>
+        <th>Plataforma</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Ações</th>
+    </tr>
+    {% for game in games %}
+    <tr>
+        <td>{{ game.nome }}</td>
+        <td>{{ game.plataforma }}</td>
+        <td>R$ {{ "%.2f"|format(game.preco) }}</td>
+        <td>{{ game.estoque }}</td>
+        <td>
+            <a href="{{ url_for('editar_game', id=game.id) }}">Editar</a> |
+            <a href="{{ url_for('excluir_game', id=game.id) }}">Excluir</a>
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

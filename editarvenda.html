@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block conteudo %}
+
+<h2>Editar Venda</h2>
+
+<form method="POST">
+    <label>Game</label>
+    <select name="game">
+        {% for game in games %}
+            <option value="{{ game.id }}"
+                {% if game.id == venda.game_id %}selected{% endif %}>
+                {{ game.nome }}
+            </option>
+        {% endfor %}
+    </select>
+    <label>Quantidade</label>
+    <input type="number" name="quantidade" value="{{ venda.quantidade }}" required>
+    <label>Data</label>
+    <input type="text" name="data" value="{{ venda.data }}" required>
+    <button type="submit">Salvar</button>
+</form>
+
+{% endblock %}

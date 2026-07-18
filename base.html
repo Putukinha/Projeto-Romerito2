@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <style>
+* {
+
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+
+}
+
+
+body {
+
+font-family: Arial, sans-serif;
+
+background-color: #f2f2f2;
+
+color: #222;
+
+}
+
+
+header {
+
+background-color: #111;
+
+color: white;
+
+padding: 20px;
+
+text-align: center;
+
+}
+
+
+header h1 {
+
+margin-bottom: 15px;
+
+}
+
+
+
+nav a {
+
+color: white;
+
+text-decoration: none;
+
+margin: 0 10px;
+
+font-weight: bold;
+
+}
+
+
+nav a:hover {
+
+color: #00ff88;
+
+}
+
+
+.container {
+
+width: 80%;
+
+margin: 30px auto;
+
+background-color: white;
+
+padding: 25px;
+
+border-radius: 10px;
+
+}
+
+
+form {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 10px;
+
+width: 400px;
+
+}
+
+
+
+input,
+select {
+
+padding: 10px;
+
+border: 1px solid #aaa;
+
+border-radius: 5px;
+
+}
+
+
+
+button {
+
+background-color: #111;
+
+color: white;
+
+padding: 10px;
+
+border: none;
+
+border-radius: 5px;
+
+cursor: pointer;
+
+}
+
+
+button:hover {
+
+background-color: #00aa55;
+
+}
+
+
+table {
+
+width: 100%;
+
+border-collapse: collapse;
+
+margin-top: 20px;
+
+}
+
+
+
+th {
+
+background-color: #111;
+
+color: white;
+
+padding: 10px;
+
+}
+
+
+
+td {
+
+border: 1px solid #ccc;
+
+padding: 10px;
+
+text-align: center;
+
+}
+
+
+
+tr:nth-child(even) {
+
+background-color: #eee;
+
+}
+
+
+a {
+
+color: #0066cc;
+
+}
+
+
+
+a:hover {
+
+text-decoration: underline;
+
+}
+
+
+.erro {
+
+color: red;
+
+margin-bottom: 15px;
+
+}
+
+
+
+
+
+
+
+
+
+    </style>
+    <meta charset="UTF-8">
+    <title>Loja de Games</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Loja de Games</h1>
+    
+    <nav>
+        <a href="{{ url_for('index') }}">Início</a>
+
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('games') }}">Games</a>
+            <a href="{{ url_for('vendas') }}">Vendas</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('cadastro') }}">Cadastro</a>
+        {% endif %}
+    </nav>
+</header>
+
+<div class="container">
+    {% block conteudo %}
+    {% endblock %}
+</div>
+
+</body>
+</html>
